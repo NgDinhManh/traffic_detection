@@ -72,15 +72,12 @@ class TrafficSignApp(ctk.CTk):
         self.result_label = ctk.CTkLabel(self.result_frame, text="Kết quả nhận diện sẽ hiển thị tại đây",
                                          font=ctk.CTkFont(size=16))
         self.result_label.pack(expand=True)
-# --------- Quốc End -----------
 
-# --------- Quyến --------------
-    # ------------------ CAMERA MODE ------------------
     def start_camera_mode(self):
         self.stop_camera()
         self.clear_controls()
         self.running = True
-        self.cap = cv2.VideoCapture(1)
+        self.cap = cv2.VideoCapture(0)
 
         # Nút điều khiển camera
         self.btn_capture = ctk.CTkButton(self.control_frame, text="Chụp ảnh", command=self.capture_image)
@@ -97,19 +94,16 @@ class TrafficSignApp(ctk.CTk):
             if not ret:
                 break
 
-            # Nhận diện YOLO
             results = self.model(frame, verbose=False, device=self.device)
             annotated = results[0].plot()
-            self.current_frame = annotated.copy()  # Lưu frame đã annotate
+            self.current_frame = annotated.copy()
 
-            # Chuyển đổi để hiển thị
             frame_rgb = cv2.cvtColor(annotated, cv2.COLOR_BGR2RGB)
             img = Image.fromarray(frame_rgb)
             imgtk = ImageTk.PhotoImage(image=img)
             self.display_label.configure(image=imgtk, text="")
             self.display_label.image = imgtk
 
-            # Cập nhật class nhận diện
             detected_classes = set()
             for r in results:
                 for c in r.boxes.cls:
@@ -134,10 +128,7 @@ class TrafficSignApp(ctk.CTk):
         if self.cap:
             self.cap.release()
             self.cap = None
-# ----------- Quyến End --------------
 
-# ----------- Mạnh ---------------
-    # ------------------ IMAGE MODE ------------------
     def start_image_mode(self):
         self.stop_camera()
         self.clear_controls()
