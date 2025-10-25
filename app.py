@@ -8,7 +8,6 @@ import os
 import datetime
 import torch
 
-# ------------------ GIAO DIỆN CHÍNH ------------------
 ctk.set_appearance_mode("light")
 ctk.set_default_color_theme("blue")
 
@@ -19,20 +18,16 @@ class TrafficSignApp(ctk.CTk):
         self.title("Nhận diện biển báo giao thông")
         self.geometry("1100x750")
 
-        # Tải mô hình YOLO
         self.model = YOLO("yolo11n_traffic_150_quyen.pt")
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
 
-        # Giao diện
         self.create_header()
         self.create_main_area()
 
-        # Biến trạng thái
         self.cap = None
         self.running = False
-        self.current_frame = None  # Lưu frame hiện tại
+        self.current_frame = None
 
-    # ------------------ GIAO DIỆN ------------------
     def create_header(self):
         header = ctk.CTkLabel(self, text="NHẬN DIỆN BIỂN BÁO GIAO THÔNG",
                               font=ctk.CTkFont(size=26, weight="bold"))
@@ -61,26 +56,12 @@ class TrafficSignApp(ctk.CTk):
         self.control_frame = ctk.CTkFrame(self)
         self.control_frame.pack(pady=5)
 
-<<<<<<< HEAD
-    def create_result_area(self):
-        self.result_frame = ctk.CTkFrame(self, width=900, height=180)
-        self.result_frame.pack(pady=10)
-        self.result_frame.pack_propagate(False)
-
-        self.result_label = ctk.CTkLabel(self.result_frame, text="Kết quả nhận diện sẽ hiển thị tại đây",
-                                         font=ctk.CTkFont(size=16))
-        self.result_label.pack(expand=True)
-
-=======
-    # ------------------ CAMERA MODE ------------------
->>>>>>> ade14f685bc72664e7458c2c378b72c5fff0d54a
     def start_camera_mode(self):
         self.stop_camera()
         self.clear_controls()
         self.running = True
-        self.cap = cv2.VideoCapture(0)
+        self.cap = cv2.VideoCapture(1)
 
-        # Nút điều khiển camera
         self.btn_capture = ctk.CTkButton(self.control_frame, text="Chụp ảnh", command=self.capture_image)
         self.btn_capture.pack(side="left", padx=10)
 
@@ -99,30 +80,12 @@ class TrafficSignApp(ctk.CTk):
             annotated = results[0].plot()
             self.current_frame = annotated.copy()
 
-<<<<<<< HEAD
-=======
-            # Hiển thị ảnh có khung
->>>>>>> ade14f685bc72664e7458c2c378b72c5fff0d54a
             frame_rgb = cv2.cvtColor(annotated, cv2.COLOR_BGR2RGB)
             img = Image.fromarray(frame_rgb)
             imgtk = ImageTk.PhotoImage(image=img)
             self.display_label.configure(image=imgtk, text="")
             self.display_label.image = imgtk
 
-<<<<<<< HEAD
-            detected_classes = set()
-            for r in results:
-                for c in r.boxes.cls:
-                    detected_classes.add(self.model.names[int(c)])
-
-            if detected_classes:
-                self.result_label.configure(
-                    text="Phát hiện: " + ", ".join(detected_classes))
-            else:
-                self.result_label.configure(text="Không phát hiện biển báo nào")
-
-=======
->>>>>>> ade14f685bc72664e7458c2c378b72c5fff0d54a
     def capture_image(self):
         if self.current_frame is not None:
             os.makedirs("captured", exist_ok=True)
@@ -136,10 +99,6 @@ class TrafficSignApp(ctk.CTk):
             self.cap.release()
             self.cap = None
 
-<<<<<<< HEAD
-=======
-    # ------------------ IMAGE MODE ------------------
->>>>>>> ade14f685bc72664e7458c2c378b72c5fff0d54a
     def start_image_mode(self):
         self.stop_camera()
         self.clear_controls()
@@ -155,19 +114,16 @@ class TrafficSignApp(ctk.CTk):
 
         img = cv2.imread(path)
 
-        # Nhận diện bằng YOLO
-        results = self.model(img, verbose=False, device=self.device)
+        results = self.model(img, device=self.device)
         annotated = results[0].plot()
-        self.current_frame = annotated.copy()  # Lưu ảnh có khung
+        self.current_frame = annotated.copy()
 
-        # Hiển thị ảnh
         annotated_rgb = cv2.cvtColor(annotated, cv2.COLOR_BGR2RGB)
         img_pil = Image.fromarray(annotated_rgb).resize((900, 500))
         imgtk = ImageTk.PhotoImage(image=img_pil)
         self.display_label.configure(image=imgtk, text="")
         self.display_label.image = imgtk
 
-        # Thêm nút điều khiển
         self.clear_controls()
         self.btn_save = ctk.CTkButton(self.control_frame, text="Lưu ảnh", command=self.save_detected_image)
         self.btn_save.pack(side="left", padx=10)
@@ -178,12 +134,10 @@ class TrafficSignApp(ctk.CTk):
     def save_detected_image(self):
         if self.current_frame is None:
             return
-        save_path = filedialog.asksaveasfilename(defaultextension=".jpg",
-                                                 filetypes=[("JPEG", "*.jpg")])
+        save_path = filedialog.asksaveasfilename(defaultextension=".jpg", filetypes=[("JPEG", "*.jpg")])
         if save_path:
             cv2.imwrite(save_path, self.current_frame)
 
-    # ------------------ TIỆN ÍCH ------------------
     def clear_controls(self):
         for w in self.control_frame.winfo_children():
             w.destroy()
@@ -193,7 +147,6 @@ class TrafficSignApp(ctk.CTk):
         self.destroy()
 
 
-# ------------------ CHẠY CHƯƠNG TRÌNH ------------------
 if __name__ == "__main__":
     app = TrafficSignApp()
     app.protocol("WM_DELETE_WINDOW", app.on_closing)
