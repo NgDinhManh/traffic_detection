@@ -4,8 +4,9 @@ Tạo môi trường
 > python -m venv .venv
 
 Chạy môi trường:
-cmd 
+cmd
 > .venv\scripts\activate
+
 Bash
 > source .venv/scripts/activate
 
