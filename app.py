@@ -32,7 +32,9 @@ class TrafficSignApp(ctk.CTk):
         self.cap = None
         self.running = False
         self.current_frame = None  # Lưu frame hiện tại
+# ----- Ánh End -------
 
+# ------ Quốc ---------
     # ------------------ GIAO DIỆN ------------------
     def create_header(self):
         header = ctk.CTkLabel(self, text="TRAFFIC SIGN DETECTION SYSTEM",
@@ -42,11 +44,11 @@ class TrafficSignApp(ctk.CTk):
         button_frame = ctk.CTkFrame(self)
         button_frame.pack(pady=5)
 
-        self.btn_camera = ctk.CTkButton(button_frame, text="📷 Nhận diện bằng Camera",
+        self.btn_camera = ctk.CTkButton(button_frame, text="Nhận diện bằng Camera",
                                         command=self.start_camera_mode)
         self.btn_camera.grid(row=0, column=0, padx=15)
 
-        self.btn_image = ctk.CTkButton(button_frame, text="🖼️ Nhận diện bằng Ảnh",
+        self.btn_image = ctk.CTkButton(button_frame, text="Nhận diện bằng Ảnh",
                                        command=self.start_image_mode)
         self.btn_image.grid(row=0, column=1, padx=15)
 
@@ -70,7 +72,9 @@ class TrafficSignApp(ctk.CTk):
         self.result_label = ctk.CTkLabel(self.result_frame, text="Kết quả nhận diện sẽ hiển thị tại đây",
                                          font=ctk.CTkFont(size=16))
         self.result_label.pack(expand=True)
+# --------- Quốc End -----------
 
+# --------- Quyến --------------
     # ------------------ CAMERA MODE ------------------
     def start_camera_mode(self):
         self.stop_camera()
@@ -79,10 +83,10 @@ class TrafficSignApp(ctk.CTk):
         self.cap = cv2.VideoCapture(1)
 
         # Nút điều khiển camera
-        self.btn_capture = ctk.CTkButton(self.control_frame, text="📸 Chụp ảnh", command=self.capture_image)
+        self.btn_capture = ctk.CTkButton(self.control_frame, text="Chụp ảnh", command=self.capture_image)
         self.btn_capture.pack(side="left", padx=10)
 
-        self.btn_stop = ctk.CTkButton(self.control_frame, text="🛑 Tắt camera", command=self.stop_camera)
+        self.btn_stop = ctk.CTkButton(self.control_frame, text="Tắt camera", command=self.stop_camera)
         self.btn_stop.pack(side="left", padx=10)
 
         threading.Thread(target=self.update_camera, daemon=True).start()
@@ -113,9 +117,9 @@ class TrafficSignApp(ctk.CTk):
 
             if detected_classes:
                 self.result_label.configure(
-                    text="📋 Phát hiện: " + ", ".join(detected_classes))
+                    text="Phát hiện: " + ", ".join(detected_classes))
             else:
-                self.result_label.configure(text="⚠️ Không phát hiện biển báo nào")
+                self.result_label.configure(text="Không phát hiện biển báo nào")
 
     def capture_image(self):
         if self.current_frame is not None:
@@ -123,21 +127,23 @@ class TrafficSignApp(ctk.CTk):
             filename = f"captured_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.jpg"
             path = os.path.join("captured", filename)
             cv2.imwrite(path, self.current_frame)
-            self.result_label.configure(text=f"📸 Ảnh đã lưu tại: {path}")
+            self.result_label.configure(text=f"Ảnh đã lưu tại: {path}")
 
     def stop_camera(self):
         self.running = False
         if self.cap:
             self.cap.release()
             self.cap = None
+# ----------- Quyến End --------------
 
+# ----------- Mạnh ---------------
     # ------------------ IMAGE MODE ------------------
     def start_image_mode(self):
         self.stop_camera()
         self.clear_controls()
-        self.display_label.configure(image=None, text="🖼️ Nhấn 'Chọn ảnh' để nhận diện")
+        self.display_label.configure(image=None, text="Nhấn 'Chọn ảnh' để nhận diện")
 
-        self.btn_choose = ctk.CTkButton(self.control_frame, text="📂 Chọn ảnh", command=self.load_image)
+        self.btn_choose = ctk.CTkButton(self.control_frame, text="Chọn ảnh", command=self.load_image)
         self.btn_choose.pack(side="left", padx=10)
 
     def load_image(self):
@@ -165,16 +171,16 @@ class TrafficSignApp(ctk.CTk):
                 detected_classes.add(self.model.names[int(c)])
 
         if detected_classes:
-            self.result_label.configure(text=f"✅ Phát hiện: {', '.join(detected_classes)}")
+            self.result_label.configure(text=f"Phát hiện: {', '.join(detected_classes)}")
         else:
-            self.result_label.configure(text="⚠️ Không phát hiện biển báo nào")
+            self.result_label.configure(text="Không phát hiện biển báo nào")
 
         # Nút phụ
         self.clear_controls()
-        self.btn_save = ctk.CTkButton(self.control_frame, text="💾 Lưu ảnh có khung", command=self.save_detected_image)
+        self.btn_save = ctk.CTkButton(self.control_frame, text="Lưu ảnh có khung", command=self.save_detected_image)
         self.btn_save.pack(side="left", padx=10)
 
-        self.btn_new = ctk.CTkButton(self.control_frame, text="➕ Ảnh khác", command=self.load_image)
+        self.btn_new = ctk.CTkButton(self.control_frame, text="Ảnh khác", command=self.load_image)
         self.btn_new.pack(side="left", padx=10)
 
     def save_detected_image(self):
@@ -184,7 +190,7 @@ class TrafficSignApp(ctk.CTk):
                                                  filetypes=[("JPEG", "*.jpg")])
         if save_path:
             cv2.imwrite(save_path, self.current_frame)
-            self.result_label.configure(text=f"💾 Ảnh đã lưu: {save_path}")
+            self.result_label.configure(text=f"Ảnh đã lưu: {save_path}")
 
     # ------------------ TIỆN ÍCH ------------------
     def clear_controls(self):
@@ -201,3 +207,4 @@ if __name__ == "__main__":
     app = TrafficSignApp()
     app.protocol("WM_DELETE_WINDOW", app.on_closing)
     app.mainloop()
+# ---------- Mạnh End ----------------
