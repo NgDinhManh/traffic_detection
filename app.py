@@ -18,6 +18,7 @@ class TrafficSignApp(ctk.CTk):
         self.title("Nhận diện biển báo giao thông")
         self.geometry("1100x750")
 
+<<<<<<< HEAD
         header_frame = ctk.CTkFrame(self, fg_color="transparent")
         header_frame.pack(pady=10, fill="x")
 
@@ -29,6 +30,8 @@ class TrafficSignApp(ctk.CTk):
         logo_label.image = logo_img
         logo_label.pack(side="right", padx=20, pady=10)
 
+=======
+>>>>>>> 2cc068e400ee71a5a6b31d3c6240d2d68e0948a3
         self.model = YOLO("yolo11n_traffic_150_quyen.pt")
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
 
